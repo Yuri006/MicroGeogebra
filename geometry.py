@@ -1,5 +1,6 @@
 import math
 import random
+import pygame
 
 EPS = 0.0000007
 
@@ -26,9 +27,13 @@ class Point:
             self.x = x * math.cos(y)
             self.y = x * math.sin(y)
         self.xy = (self.x, self.y)
+        self.rect = pygame.Rect(self.xy[0] - 4, self.xy[1] - 4, 8, 8)
 
     def get_angle(self):
         return self.to_polar()
+
+    def update_rect(self):
+        self.rect = pygame.Rect(self.x - 3, self.y - 3, self.x + 3, self.y + 3)
 
     def to_polar(self):
         if self.x == self.y == 0:

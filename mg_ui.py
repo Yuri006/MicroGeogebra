@@ -2,6 +2,82 @@ import pygame.gfxdraw
 import pygame as p
 from geometry import *
 
+buttons = [("move", []),
+           ('', []),
+           ('', []),
+           ('', []),
+           ('', []),
+           ("select", []),
+           ('', []),
+           ('', []),
+           ('', []),
+           ('', [])]
+
+
+class Btn:
+    def __init__(self, button_setting):
+        first_btn_rect = p.Rect(50, 500, 110, 530)
+        second_btn_rect = first_btn_rect.copy().move(0, 50)
+        button_rect = [first_btn_rect.copy().move(80 * i, 0) for i in range(5)] + [
+            second_btn_rect.copy().move(80 * i, 0)
+            for i in range(5)]
+        self.btn_rect = button_setting
+        for i in range(len(self.btn_rect)):
+            self.btn_rect[i][1].append(button_rect[i])
+        print(self.btn_rect)
+
+    def draw(self):
+        pass
+
+    def checker(self, pos):
+        for i in self.btn_rect:
+            if i[1][-1].collidepoint(pos):
+                return i[0]
+
+
+class Points:
+    def __init__(self, center):
+        self.points = []
+        self.figure = []
+        self.center = center
+        self.mode = 1
+        self.selected = set()
+
+    def update(self, shift):
+        for point in self.points:
+            point.xy = (point.xy[0] + shift[0], point.xy[1] + shift[1])
+            point.update_rect()
+
+    def select(self, n):
+        if n in self.selected:
+            self.selected.delete(n)  # TODO: not finished
+        else:
+            self.selected.add(n)
+
+    def move(self, start, end):
+        for i in self.selected:
+            point = self.points[i]
+            point.xy = (point.xy[0] + abs(start[0] - end[0]), point.xy[1] + abs(start[1] - end[1]))
+            point.update_rect()
+
+    def add(self, pos):
+        self.points.append(Point(pos))
+
+    def add_figure(self, f, p):
+        self.figure.append((f, p))
+
+    def draw_figure(self, screen):
+        for i in self.figure:
+            if i[0] == 'Line':
+                pygame.draw.line(screen, (0, 0, 0), self.points[i[1][0]].xy, self.points[i[1][1]].xy)
+            elif i[0] == 'Triangle':
+                pygame.draw.polygon(screen, (0, 0, 0),
+                                    [self.points[i[1][0]].xy, self.points[i[1][1]].xy, self.points[i[1][2]].xy])
+
+    def change_mode(self, m):
+        if self.mode != m:
+            self.mode = m
+
 
 class ViewWindows(pygame.sprite.Sprite):
     def __init__(self, x, y, width, height):
@@ -103,4 +179,8 @@ class DynamicCell:
         return l_line + r_line + t_line + b_line
 
     def scale(self, scale):
+        print(self.size)
         self.size += 2 * scale
+
+
+btns = Btn(buttons)
