@@ -27,7 +27,7 @@ class Point:
             self.x = x * math.cos(y)
             self.y = x * math.sin(y)
         self.xy = (self.x, self.y)
-        self.rect = pygame.Rect(self.xy[0] - 4, self.xy[1] - 4, 8, 8)
+        self.rect = pygame.Rect(self.xy[0] - 5, self.xy[1] - 5, 10, 10)
 
     def get_angle(self):
         return self.to_polar()
@@ -253,7 +253,9 @@ class Circle:
 
 class Triangle:
     def __init__(self, *args):
-        if len(args) == 3:
+        if len(args) == 1:
+            self.a, self.b, self.c = args[0]
+        elif len(args) == 3:
             self.a, self.b, self.c = args[0], args[1], args[2]
 
     def bisector(self, n):
